@@ -1,2 +1,0 @@
-@hint: this is a supposed to be informal
-Hello man, this is a mistake. Isn't it? I don't know. Whatever, whatever, am I gonna do [[note: repetitive and vague; could be clearer]]
