@@ -1,9 +1,9 @@
 import lmstudio as lms
 import subprocess
 
-ORIGINAL_PATH = "./working/original.txt"
-OUTPUT_PATH = "./working/suggestions.txt"
-SYS_PROMPT_PATH = "./llm_proofreader_system_prompt.txt"
+ORIGINAL_PATH = "working/original.txt"
+OUTPUT_PATH = "working/suggestions.txt"
+SYS_PROMPT_PATH = "llm_proofreader_system_prompt.txt"
 
 
 def readTxt(path):
@@ -30,12 +30,13 @@ def triggerDiff(file1, file2):
     subprocess.run(["delta", ORIGINAL_PATH, OUTPUT_PATH])
 
 
-def main():
+def get_suggestions(display_diff=True):
     original_text = readTxt(ORIGINAL_PATH)
     processed_text = llmCall(original_text)
     writeTxt(processed_text, OUTPUT_PATH)
-    triggerDiff(ORIGINAL_PATH, OUTPUT_PATH)
+    if display_diff:
+        triggerDiff(ORIGINAL_PATH, OUTPUT_PATH)
 
 
 if __name__ == "__main__":
-    main()
+    get_suggestions()
