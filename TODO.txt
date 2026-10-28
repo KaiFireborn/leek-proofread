@@ -1,0 +1,9 @@
+./get_suggestion_json.py
+
+Language setting maybe? Could also be added directly to the prompt (esp german)
+
+matrix bot integration (highlight changes somehow?)
+
+
+tte, ttd/ttg
+pre, prg/prd
