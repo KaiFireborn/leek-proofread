@@ -61,3 +61,7 @@ def getSysPrompt(model_mode):
     }
     # TODO: add aliases (but elsewhere)
     return readTxt(SYS_PROMPTS_PATH + mode_to_filename_map[model_mode] + ".txt")
+
+
+def getHelpText():
+    return readTxt("README.txt")

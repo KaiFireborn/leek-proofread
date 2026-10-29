@@ -6,6 +6,7 @@ from utilities import (
     saveOriginal,
     showDiff,
     getConfig,
+    getHelpText,
 )
 import sys
 import pyperclip
@@ -81,6 +82,10 @@ def process(model_mode, original, show_diff=True):
 
 
 def execute(show_diff=True):
+    if sys.argv[1] in ["-h", "--help"]:
+        print(getHelpText())
+        return
+
     modes = get_modes()
     process(modes["model_mode"], modes["input_mode"][1], show_diff)
 
