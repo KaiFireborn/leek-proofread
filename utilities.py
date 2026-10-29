@@ -1,11 +1,18 @@
 import lmstudio as lms
 import subprocess
-
-MODEL = "qwen/qwen3-4b-2507"  # TODO: make this configurable
+import json
 
 ORIGINAL_PATH = "working/original.txt"
 OUTPUT_PATH = "working/suggestions.txt"
 SYS_PROMPTS_PATH = "./llm_system_prompts/"
+
+
+def getConfig():
+    with open("config.json", "r") as infile:
+        return json.load(infile)
+
+
+config = getConfig()
 
 
 def readTxt(path):
@@ -26,19 +33,23 @@ def llmCall(system_prompt, current_prompt):
     return str(llm_output)
 
 
-def getOriginal(input_mode):
-    original_text = "ERROR"  # TODO: proper error handling here
-    if input_mode == "file":
-        original_text = readTxt(ORIGINAL_PATH)
+def getOriginalFromFile():
+    original_text = readTxt(ORIGINAL_PATH)
     return original_text
 
 
+# maybe those two better in main?
+def saveOriginal(original):
+    writeTxt(original + "\n", ORIGINAL_PATH)
+
+
 def saveOutput(processed_text):
-    writeTxt(processed_text, OUTPUT_PATH)
+    writeTxt(processed_text.replace("  ", "") + "\n", OUTPUT_PATH)
 
 
 def showDiff():
     subprocess.run(["delta", ORIGINAL_PATH, OUTPUT_PATH])
+    # remove lines like ""\ No newline at end of file"
 
 
 def getSysPrompt(model_mode):

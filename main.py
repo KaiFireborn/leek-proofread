@@ -1,62 +1,88 @@
 from utilities import (
     getSysPrompt,
-    readTxt,
-    writeTxt,
     llmCall,
-    getOriginal,
+    getOriginalFromFile,
     saveOutput,
+    saveOriginal,
     showDiff,
+    getConfig,
 )
 import sys
 import pyperclip
 
-
-def processProofread(model_mode, input_mode, show_diff=True):
-    result = llmCall(getSysPrompt(model_mode), getOriginal(input_mode))
-    saveOutput(result)
-    if show_diff:
-        showDiff()
+config = getConfig()
 
 
 def get_modes():
-    def model_mode_map(arg):
+    def model_mode_map(relevant_args):
+        if len(relevant_args) < 1:
+            raise Exception("no first argument")
+
         aliases = {
             "tte": ["translate_to_english", "g2e"],
-            "ttg": ["translate_to_german", "e2g"],
+            "ttg": ["translate_to_german", "e2g", "ttd"],
             "pre": ["proofread_english"],
-            "prg": ["proofread_german"],
+            "prg": ["proofread_german", "prd"],
         }
 
         mode_map = {}
         for key, values in aliases.items():
             for alias in [key] + values:
                 mode_map[alias] = key
-        if arg not in mode_map:
-            raise KeyError(arg, "not in mode map")
-        return mode_map[arg]
+
+        if relevant_args[0] not in mode_map:
+            raise Exception(f"{relevant_args[0]} not in mode map")
+
+        return mode_map[relevant_args[0]]
 
     def model_input_map_and_inp(args):
-        # check args length or something
-        input_mode = "file"
-        if args[2] in ["-v", "--clipboard"]:  # TODO: extract automatically to doc
-            return ("clipboard", pyperclip.paste())
-        elif args[2] in ["-s", "--string"]:
-            if args[3] != "":  # FIXME: potentially check length here instead
-                raise Exception(
-                    "No string provided despite -s argument"
-                )  # print them or sth
-            return ("string", args[3])
+        print(args)
 
-    args = sys.argv
+        def get_note(relevant_args):
+            print(relevant_args)
+            if len(relevant_args) < 1:
+                return ""
+            else:
+                print("Found note:", relevant_args[0])
+                return f"@hint: {relevant_args[0]}\n"
+
+        if len(args) < 1:
+            return ("file", getOriginalFromFile())
+
+        elif args[0] in ["-f", "--file"]:
+            return ("file", get_note(args[1:]) + getOriginalFromFile())
+
+        elif args[0] in ["-v", "--clipboard"]:  # TODO: extract automatically to doc
+            return ("clipboard", get_note(args[1:]) + pyperclip.paste())
+
+        elif args[0] in ["-s", "--string"]:
+            if len(args) < 2:
+                raise Exception("No string provided despite -s argument")
+            return ("string", get_note(args[2:]) + args[1])
+
+        else:
+            print(args[0])
+            raise Exception("No such mode")
 
     # usage: leek ttg ttg -s
 
-    return {"model_mode": model_mode_map(args[1]), "input_mode": input_mode}
+    return {
+        "model_mode": model_mode_map(sys.argv[1:]),
+        "input_mode": model_input_map_and_inp(sys.argv[2:]),
+    }
 
 
-def execute(display_diff=True):
+def process(model_mode, original, show_diff=True):
+    saveOriginal(original)
+    result = llmCall(getSysPrompt(model_mode), original)
+    saveOutput(result)
+    if show_diff:
+        showDiff()
 
-    processProofread(get_modes(), getOriginal("file"))
+
+def execute(show_diff=True):
+    modes = get_modes()
+    process(modes["model_mode"], modes["input_mode"][1], show_diff)
 
 
 if __name__ == "__main__":
