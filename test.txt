@@ -1,0 +1,7 @@
+['-s', 'in order to continue with default config, call leek', 'do multiple']
+['do multiple']
+Found note: do multiple
+diff
+[38;2;248;248;242m@hint: do multiple[0m
+[48;2;144;16;17min order to[48;2;63;0;1m continue with default config, call leek[0m[48;2;63;0;1m[0K[0m
+[48;2;0;96;0;38;2;248;248;242mTo[48;2;0;40;0m continue with default config, call leek[48;2;0;96;0m.[0m[48;2;0;40;0m[0K[0m

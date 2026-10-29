@@ -47,9 +47,33 @@ def saveOutput(processed_text):
     writeTxt(processed_text.replace("  ", "") + "\n", OUTPUT_PATH)
 
 
+def clearWorkingFiles():  # TODO: either add default values here or do all this without files in the first place...
+    writeTxt("", ORIGINAL_PATH)
+    writeTxt("", OUTPUT_PATH)
+
+
 def showDiff():
-    subprocess.run(["delta", ORIGINAL_PATH, OUTPUT_PATH])
-    # remove lines like ""\ No newline at end of file"
+    result = subprocess.run(
+        ["delta", ORIGINAL_PATH, OUTPUT_PATH],
+        capture_output=True,
+        text=True,
+    )
+
+    lines = result.stdout.splitlines()
+
+    filtered_lines = []
+    recording = False
+
+    for line in lines:  # TODO: cleaner
+        if recording:
+            filtered_lines.append(line)
+
+        if "\x1b[34m───\x1b[0m\x1b[34m┘\x1b[0m" == line:
+            recording = True
+
+    result = "\n".join(filtered_lines)
+    print(result)
+    return result
 
 
 def getSysPrompt(model_mode):

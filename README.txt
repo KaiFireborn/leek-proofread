@@ -13,6 +13,6 @@ AI use disclosure:
 `leek pre -s "This tekst has a mistaker," -n "this text should be formal"`
 
 Syntax:
-`leek <pr{e, g}|ttg{e, g}> -<f|v|s "input_text"> [-n note]`
+`leek <pr{e, g}|ttg{e, g}> -<f|v|s "input_text"> ["note"]`
 The option `-f` takes the inut from `./working/original.txt` (where the other options also save the last input to). `-v` takes it from keyboard and `-s` from a following argument. `-n` optionally adds a hint for the llm layer e.g intended style of the text.
 `e`, `g` stand for english and german, `tt` for *translate to*, `pr` for proofread.

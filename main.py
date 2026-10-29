@@ -44,8 +44,8 @@ def get_modes():
             if len(relevant_args) < 1:
                 return ""
             else:
-                print("Found note:", relevant_args[0])
-                return f"@hint: {relevant_args[0]}\n"
+                print("Found note:", relevant_args[-1])
+                return f"@hint: {relevant_args[-1]}\n"
 
         if len(args) < 1:
             return ("file", getOriginalFromFile())
@@ -62,7 +62,6 @@ def get_modes():
             return ("string", get_note(args[2:]) + args[1])
 
         else:
-            print(args[0])
             raise Exception("No such mode")
 
     # usage: leek ttg ttg -s
@@ -78,7 +77,9 @@ def process(model_mode, original, show_diff=True):
     result = llmCall(getSysPrompt(model_mode), original)
     saveOutput(result)
     if show_diff:
-        showDiff()
+        print("diff")
+        return showDiff()
+    return "Error when processing diff."
 
 
 def execute(show_diff=True):
@@ -87,7 +88,7 @@ def execute(show_diff=True):
         return
 
     modes = get_modes()
-    process(modes["model_mode"], modes["input_mode"][1], show_diff)
+    return process(modes["model_mode"], modes["input_mode"][1], show_diff)
 
 
 if __name__ == "__main__":
