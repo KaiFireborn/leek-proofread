@@ -4,12 +4,13 @@ import json
 
 ORIGINAL_PATH = "working/original.txt"
 OUTPUT_PATH = "working/suggestions.txt"
-SYS_PROMPTS_PATH = "./llm_system_prompts/"
+SYS_PROMPTS_PATH = "llm_system_prompts/"
 
 
 def getConfig():
-    with open("config.json", "r") as infile:
-        return json.load(infile)
+    # with open("config.json", "r") as infile:
+    #     return json.load(infile)
+    return {}
 
 
 config = getConfig()
